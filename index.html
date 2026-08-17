@@ -1,0 +1,180 @@
+<!-- index.html - 完整修改版 -->
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+  <title>导航页 v2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- ===== 主内容 ===== -->
+  <div id="app">
+    <!-- 主内容区域 -->
+    <div class="main-wrapper">
+      <!-- 左侧内容区 -->
+      <div class="content-area">
+        <!-- 头部搜索 -->
+        <header class="header">
+          <div class="search-engine">
+            <select id="engineSelect" class="engine-select">
+              <option value="https://www.baidu.com/s?wd=">百度</option>
+              <option value="https://www.google.com/search?q=">Google</option>
+              <option value="https://www.bing.com/search?q=">Bing</option>
+            </select>
+            <input type="text" id="searchInput" class="search-input" placeholder="搜索...">
+            <button id="searchBtn" class="search-btn">
+              <span class="icon-search">🔍</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- 标签内容 -->
+        <main id="mainContent" class="main-content"></main>
+
+        <!-- 底部 -->
+        <footer class="footer">
+          <span class="footer-hint">💡 右下角按钮管理导航</span>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 右侧浮动按钮组 ===== -->
+  <div class="float-buttons" id="floatButtons">
+    <!-- 新建标签 -->
+    <button class="float-btn" id="addBookmarkBtn" title="新建标签">
+      <span class="float-btn-icon">📄</span>
+      <span class="float-btn-tooltip">新建标签</span>
+    </button>
+    
+    <!-- 新建分类 -->
+    <button class="float-btn" id="addCategoryBtn" title="新建分类">
+      <span class="float-btn-icon">➕</span>
+      <span class="float-btn-tooltip">新建分类</span>
+    </button>
+    
+    <!-- 可编辑开关 -->
+    <button class="float-btn toggle-btn" id="editToggleBtn">
+      <span class="float-btn-icon" id="toggleIcon">✏️</span>
+      <span class="float-btn-tooltip" id="toggleTooltip">锁定</span>
+    </button>
+    
+    <!-- 导出数据 -->
+    <button class="float-btn" id="exportBtn" title="导出数据">
+      <span class="float-btn-icon">💾</span>
+      <span class="float-btn-tooltip">导出数据</span>
+    </button>
+    
+    <!-- 导入数据 -->
+    <button class="float-btn" id="importBtn" title="导入数据">
+      <span class="float-btn-icon">📥️</span>
+      <span class="float-btn-tooltip">导入数据</span>
+    </button>
+    
+    <!-- 重置 -->
+    <button class="float-btn" id="resetBtn" title="重置">
+      <span class="float-btn-icon">🔄</span>
+      <span class="float-btn-tooltip">重置</span>
+    </button>
+    
+    <!-- 分隔间距 -->
+    <div class="float-divider"></div>
+    
+    <!-- 返回顶部 -->
+    <button class="float-btn back-to-top" id="backToTopBtn" title="返回顶部">
+      <span class="float-btn-icon">↑</span>
+      <span class="float-btn-tooltip">返回顶部</span>
+    </button>
+  </div>
+
+  <!-- 模态框 -->
+  <div id="bookmarkModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeModal">✕</span>
+      <h3 id="modalTitle">新建网页标签</h3>
+      <form id="bookmarkForm">
+        <input type="hidden" id="editBookmarkId" value="">
+        <div class="form-group">
+          <label>网页名</label>
+          <input type="text" id="bookmarkName" placeholder="例如：GitHub" required>
+        </div>
+        <div class="form-group">
+          <label>网址</label>
+          <input type="url" id="bookmarkUrl" placeholder="https://example.com" required>
+          <small id="urlHint" class="url-hint" style="display:none;"></small>
+        </div>
+        <div class="form-group">
+          <label>图标</label>
+          <div class="icon-input-group">
+            <input type="text" id="bookmarkIcon" placeholder="输入文字或Emoji" value="🌐">
+            <button type="button" id="uploadIconBtn" class="upload-icon-btn">📤 上传图片</button>
+          </div>
+          <small>可以输入文字/Emoji，或点击上传按钮从图片生成图标</small>
+          <div id="iconPreview" class="icon-preview" style="display:none;">
+            <img id="iconPreviewImg" src="" alt="预览">
+            <span id="iconPreviewText" style="display:none;"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>所属分类</label>
+          <select id="bookmarkCategory" required></select>
+        </div>
+        <button type="submit" class="submit-btn">保存</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="categoryModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" id="closeCategoryModal">✕</span>
+      <h3 id="categoryModalTitle">新建分类</h3>
+      <form id="categoryForm">
+        <input type="hidden" id="editCategoryId" value="">
+        <div class="form-group">
+          <label>分类名称</label>
+          <input type="text" id="categoryName" placeholder="例如：常用工具" required>
+        </div>
+        <button type="submit" class="submit-btn">保存</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="cropModal" class="modal">
+    <div class="modal-content crop-modal-content">
+      <span class="close-modal" id="closeCropModal">✕</span>
+      <h3>裁剪图片为图标</h3>
+      <div class="crop-container">
+        <div class="crop-wrapper" id="cropWrapper">
+          <img id="cropImage" src="" alt="裁剪图片">
+          <div class="crop-box" id="cropBox">
+            <div class="crop-handle crop-handle-nw"></div>
+            <div class="crop-handle crop-handle-ne"></div>
+            <div class="crop-handle crop-handle-sw"></div>
+            <div class="crop-handle crop-handle-se"></div>
+          </div>
+        </div>
+        <div class="crop-controls">
+          <button type="button" id="resetCropBtn">↺ 重置</button>
+        </div>
+        <div class="crop-info">
+          <span id="cropSizeInfo">128 × 128</span>
+        </div>
+      </div>
+      <div class="crop-actions">
+        <button type="button" id="cancelCropBtn" class="btn-secondary">取消</button>
+        <button type="button" id="confirmCropBtn" class="submit-btn">确认生成图标</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+  <script src="js/storageManager.js"></script>
+  <script src="js/iconManager.js"></script>
+  <script src="js/cropManager.js"></script>
+  <script src="js/dataManager.js"></script>
+  <script src="js/renderer.js"></script>
+  <script src="js/eventHandlers.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
